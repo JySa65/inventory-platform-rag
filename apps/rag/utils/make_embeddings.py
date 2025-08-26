@@ -21,3 +21,7 @@ def make_embeddings():
     else:
         from langchain_huggingface import HuggingFaceEmbeddings
         return HuggingFaceEmbeddings(model_name=settings.hf_emb_model)
+
+
+# curl -X POST http://localhost:8080/ask -H 'content-type: application/json' \
+#   -d '{"question":"dame informacion del producto PRD-0001, tambien me das el precio en BS teniendo en cuenta que el bolivar esta en 143.11 bs"}'

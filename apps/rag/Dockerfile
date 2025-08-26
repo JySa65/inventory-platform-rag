@@ -28,5 +28,7 @@ USER appuser
 COPY docker/entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
+EXPOSE 8080
+
 # Gunicorn con workers uvicorn para FastAPI
 CMD ["gunicorn","app:app","-k","uvicorn.workers.UvicornWorker","-b","0.0.0.0:8080","--workers","2","--timeout","120"]

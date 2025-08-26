@@ -25,6 +25,8 @@ RUN adduser --disabled-password --gecos "" appuser \
  && chown -R appuser:appuser /app
 USER appuser
 
+EXPOSE 8000
+
 # RUN python manage.py collectstatic --noinput
 
 # Entrypoint: espera DB + migra + arranca gunicorn

@@ -15,13 +15,16 @@ class Settings(BaseSettings):
     )
 
     # Postgres
-    pg_dsn: str = "postgresql+psycopg://postgres:postgres@localhost:5432/inventory"
+    pg_dsn: str = Field(
+        default=None,
+        alias="PGVECTOR_CONNECTION_STRING",
+    )
 
     # Colección pgvector
     collection: str = "kb"
 
     # Redis
-    redis_url: str = Field(default="redis://localhost:6379/0", alias="REDIS_URL")
+    redis_url: str = Field(default="redis://postgres:6379/0", alias="REDIS_URL")
 
     # LLM (OpenAI-compatible: GitHub Models, OpenAI…)
     openai_api_key: Optional[str] = Field(default=None, alias="OPENAI_API_KEY")

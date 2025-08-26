@@ -210,8 +210,8 @@ async def lifespan(app: FastAPI):
             "facts": RunnableLambda(gather_facts),
             "context": retriever | _fmt,
         }
-        # if llm is not None:
-        #     return base | price_stock_moves_prompt | llm | StrOutputParser()
+        if llm is not None:
+            return base | price_stock_moves_prompt | llm | StrOutputParser()
 
         # Fallback sin LLM: mínimo útil
         def no_llm_answer(inputs):

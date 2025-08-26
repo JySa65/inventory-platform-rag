@@ -1,0 +1,68 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    container_name: inv_pg
+    ports:
+      - "5432:5432"
+    env_file: .env
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+
+  redis:
+    image: redis:8.2.1
+    container_name: inv_redis
+    ports:
+      - "6379:6379"
+
+  backend:
+    build:
+      context: ./apps/backend
+      dockerfile: Dockerfile
+    image: inventory-backend:latest
+    env_file: .env
+    command: uv run python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - postgres
+    ports:
+      - "8000:8000"
+    restart: on-failure
+    volumes:
+      - ./apps/backend:/app
+
+  rag:
+    build:
+      context: ./apps/rag
+      dockerfile: Dockerfile
+    image: inventory-rag:latest
+    env_file: .env
+    command: uv run uvicorn app:app --host 0.0.0.0 --port 8080 --reload
+
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "8080:8080"
+    # Para re-ingestar al arrancar (opcional)
+    environment:
+      - RAG_INGEST_ON_START=0
+    volumes:
+      - ./apps/rag/knowledge:/app/knowledge:ro
+      - ./apps/rag:/app
+
+    restart: on-failure
+
+
+  # ollama:
+  #   image: ollama/ollama:latest
+  #   ports: ["11434:11434"]
+  #   volumes:
+  #     - ollama:/root/.ollama
+  #   healthcheck:
+  #     test: ["CMD","ollama","ps"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+volumes:
+  pg_data:

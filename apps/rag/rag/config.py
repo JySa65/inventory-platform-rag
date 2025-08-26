@@ -41,4 +41,4 @@ class Settings(BaseSettings):
 settings = Settings()
 
 
-print("Configuration settings loaded:", settings.model_dump())
+# print("Configuration settings loaded:", settings.model_dump())
